@@ -1,80 +1,80 @@
 import requests
 from bs4 import BeautifulSoup
-from textblob import TextBlob
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 
-class SocialMediaAnalyzer:
+class StockAnalyzer:
+    def __init__(self):
+        self.sid = SentimentIntensityAnalyzer()
 
-    def __init__(self, platform, keywords):
-        self.platform = platform
-        self.keywords = keywords
+    def scrape_news(self, stock):
+        url = f"https://www.example.com/news/{stock}"
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        news_articles = soup.find_all('div', class_='article')
 
-    def scrape_social_media_posts(self):
-        # Implement web scraping logic using BeautifulSoup and Requests to fetch posts from the specified platform based on the given keywords
-        # Return the scraped posts
-        posts = []
+        headlines = []
+        for article in news_articles:
+            headline = article.find('h2').text
+            headlines.append(headline)
 
-        if self.platform == "Twitter":
-            # Code to scrape Twitter posts based on keywords
-            pass
-        elif self.platform == "Facebook":
-            # Code to scrape Facebook posts based on keywords
-            pass
-        elif self.platform == "Reddit":
-            # Code to scrape Reddit posts based on keywords
-            pass
+        return headlines
 
-        return posts
+    def scrape_tweets(self, stock):
+        url = f"https://www.example.com/tweets/{stock}"
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        tweets = soup.find_all('div', class_='tweet')
 
-    def perform_sentiment_analysis(self, posts):
-        # Apply sentiment analysis using TextBlob or other natural language processing techniques to determine the sentiment of each post
-        # Return the sentiment analysis results
-        results = []
+        tweet_text = []
+        for tweet in tweets:
+            text = tweet.find('p').text
+            tweet_text.append(text)
 
-        for post in posts:
-            sentiment = TextBlob(post).sentiment.polarity
-            results.append(sentiment)
+        return tweet_text
 
-        return results
+    def perform_sentiment_analysis(self, text):
+        sentiment_scores = []
+        for item in text:
+            sentiment_scores.append(self.sid.polarity_scores(item)['compound'])
 
-    def visualize_sentiment_analysis(self, results):
-        # Generate visualizations, such as pie charts or bar graphs, to represent the sentiment analysis results
-        # Display the visualizations using matplotlib
-        labels = ['Positive', 'Negative', 'Neutral']
-        sentiment_counts = [0, 0, 0]
+        return sentiment_scores
 
-        for sentiment in results:
-            if sentiment > 0:
-                sentiment_counts[0] += 1
-            elif sentiment < 0:
-                sentiment_counts[1] += 1
-            else:
-                sentiment_counts[2] += 1
-
-        plt.pie(sentiment_counts, labels=labels, autopct='%1.1f%%')
-        plt.title('Sentiment Analysis Results')
+    def visualize_sentiment_distribution(self, scores):
+        plt.hist(scores, bins=[-1, -0.5, 0, 0.5, 1], edgecolor='black')
+        plt.xlabel('Sentiment Score')
+        plt.ylabel('Frequency')
+        plt.title('Sentiment Distribution')
         plt.show()
 
-    def real_time_analysis(self):
-        # Continuously fetch and analyze new posts from the specified platform in real-time
-        # Perform sentiment analysis on each new post and update the visualization
-        pass
+    def generate_word_cloud(self, text):
+        if len(text) == 0:
+            print("No text available to generate word cloud.")
+            return
 
-    def user_interface(self):
-        # Develop a user-friendly interface allowing users to input keywords or hashtags
-        # Display the sentiment analysis results to the users
+        word_cloud_text = ' '.join(text)
+        wordcloud = WordCloud().generate(word_cloud_text)
 
-        posts = self.scrape_social_media_posts()
-        results = self.perform_sentiment_analysis(posts)
-        self.visualize_sentiment_analysis(results)
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.show()
 
-        choice = input("Perform real-time analysis? (Y/N): ")
-        if choice.upper() == "Y":
-            self.real_time_analysis()
+    def analyze_stock(self, stock):
+        news_headlines = self.scrape_news(stock)
+        tweet_text = self.scrape_tweets(stock)
+
+        all_text = news_headlines + tweet_text
+
+        sentiment_scores = self.perform_sentiment_analysis(all_text)
+
+        self.visualize_sentiment_distribution(sentiment_scores)
+
+        self.generate_word_cloud(all_text)
 
 if __name__ == "__main__":
-    platform = input("Enter the social media platform to analyze (Twitter/Facebook/Reddit): ")
-    keywords = input("Enter the keywords or hashtags to search for: ")
+    stocks = ['AAPL', 'GOOGL', 'AMZN']  # Example list of stocks to analyze
 
-    analyzer = SocialMediaAnalyzer(platform, keywords)
-    analyzer.user_interface()
+    analyzer = StockAnalyzer()
+    for stock in stocks:
+        analyzer.analyze_stock(stock)
