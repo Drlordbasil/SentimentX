@@ -1,0 +1,27 @@
+Enter the social media platform to analyze (Twitter/Facebook/Reddit): Enter the keywords or hashtags to search for: C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\axes\_axes.py:3229: RuntimeWarning: invalid value encountered in divide
+  x = x / sx
+Traceback (most recent call last):
+  File "C:\Users\Antho\temp.py", line 80, in <module>
+    analyzer.user_interface()
+  File "C:\Users\Antho\temp.py", line 69, in user_interface
+    self.visualize_sentiment_analysis(results)
+  File "C:\Users\Antho\temp.py", line 54, in visualize_sentiment_analysis
+    plt.pie(sentiment_counts, labels=labels, autopct='%1.1f%%')
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\pyplot.py", line 3546, in pie
+    return gca().pie(
+           ^^^^^^^^^^
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\__init__.py", line 1478, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\axes\_axes.py", line 3273, in pie
+    w = mpatches.Wedge((x, y), radius, 360. * min(theta1, theta2),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\patches.py", line 1198, in __init__
+    self._recompute_path()
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\patches.py", line 1210, in _recompute_path
+    arc = Path.arc(theta1, theta2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Antho\chat_completion_venv\Lib\site-packages\matplotlib\path.py", line 958, in arc
+    n = int(2 ** np.ceil((eta2 - eta1) / halfpi))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
